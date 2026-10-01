@@ -1,0 +1,26 @@
+name: Build and Store Container Artifact
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+
+jobs:
+  build-and-store:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t vulnerable-code-team1:latest .
+
+      - name: Save image as tar
+        run: docker save vulnerable-code-team1:latest -o container-image.tar
+
+      - name: Upload container as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-artifact
+          path: container-image.tar
