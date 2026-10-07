@@ -1,0 +1,19 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.75.0"
+  },
+  "ReportID": "01a1173e-2226-7501-8492-24036e1268c6",
+  "CreatedAt": "2026-10-07T19:41:50.374329+03:00",
+  "ArtifactID": "sha256:510a6b2c9ca619e76770111823386f7aa40b49004b10f66334efc9d4bd07f33d",
+  "ArtifactName": ".",
+  "ArtifactType": "repository",
+  "Metadata": {
+    "RepoURL": "https://github.com/vulnerable-code-team2-org/vulnerable-code-team1.git",
+    "Branch": "main",
+    "Commit": "4fb33a5652508e7d6287dc0f07b75efc0121bdbc",
+    "CommitMsg": "Merge branch 'main' of https://github.com/makelloss/vulnerable-code-team2",
+    "Author": "makelloss \u003cartemvakhno@gmail.com\u003e",
+    "Committer": "makelloss \u003cartemvakhno@gmail.com\u003e"
+  }
+}
