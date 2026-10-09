@@ -13,6 +13,10 @@ permissions:
 jobs:
   sbom:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -25,8 +29,34 @@ jobs:
           output-file: sbom.json
           upload-artifact: false
 
-      - name: Upload SBOM as artifact
+      - name: Scan SBOM with Grype
+        id: grype
+        uses: anchore/scan-action@27805bf3b4e84b4a5c980df22ed233c00390a439 # v7.4.2
+        with:
+          sbom: sbom.json
+          fail-build: false
+          output-format: sarif
+
+      - name: Upload SARIF to Security tab
+        if: github.ref == 'refs/heads/main'
+        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        with:
+          sarif_file: ${{ steps.grype.outputs.sarif }}
+          category: grype-repo-sbom
+
+      - name: Install Cosign
+        if: github.ref == 'refs/heads/main'
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Sign SBOM with Cosign
+        if: github.ref == 'refs/heads/main'
+        run: cosign sign-blob --yes --bundle sbom.json.bundle sbom.json
+
+      - name: Upload SBOM and signature
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sbom
-          path: sbom.json
+          path: |
+            sbom.json
+            sbom.json.bundle
+          if-no-files-found: warn
